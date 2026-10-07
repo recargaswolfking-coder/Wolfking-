@@ -3,15 +3,15 @@ const WHATSAPP = "573184986724";
 const DIAMONDS = [
   { id: "d110", name: "110 diamantes", amount: 110, price: 3000 },
   { id: "d341", name: "341 diamantes", amount: 341, price: 9500 },
-  { id: "d572", name: "572 diamantes", amount: 572, price: 15500, tag: "Popular" },
+  { id: "d572", name: "572 diamantes", amount: 572, price: 15500 },
   { id: "d1166", name: "1166 diamantes", amount: 1166, price: 30000 },
   { id: "d2398", name: "2398 diamantes", amount: 2398, price: 59000 },
-  { id: "d6160", name: "6160 diamantes", amount: 6160, price: 145000, tag: "Mejor valor" },
+  { id: "d6160", name: "6160 diamantes", amount: 6160, price: 145000 },
 ];
 
 const PASSES = [
   { id: "weekly", name: "Tarjeta semanal", icon: "📅", price: 6200 },
-  { id: "monthly", name: "Tarjeta mensual", icon: "🗓️", price: 34000, tag: "Top" },
+  { id: "monthly", name: "Tarjeta mensual", icon: "🗓️", price: 34000 },
   { id: "booyah", name: "Pase Booyah", icon: "🏆", price: 8000 },
 ];
 
@@ -27,7 +27,6 @@ function card(item) {
   btn.className = "card pkg";
   btn.dataset.id = item.id;
   btn.innerHTML = `
-    ${item.tag ? `<span class="tag">${item.tag}</span>` : ""}
     <span class="pkg-icon">${item.icon || "💎"}</span>
     <span class="pkg-name">${item.amount ? item.amount.toLocaleString("es-CO") : item.name}</span>
     <span class="pkg-price">${cop(item.price)}</span>
@@ -39,13 +38,12 @@ function card(item) {
 DIAMONDS.forEach((d) => document.getElementById("diamonds").appendChild(card(d)));
 PASSES.forEach((p) => document.getElementById("passes").appendChild(card(p)));
 
-// Selección de paquete
+// Seleccionar paquete
 function select(id) {
   selected = all.find((i) => i.id === id);
   document.querySelectorAll(".pkg").forEach((el) => el.classList.toggle("active", el.dataset.id === id));
   document.getElementById("sum-item").textContent = selected.name;
   document.getElementById("sum-price").textContent = cop(selected.price);
-  showError("item", false);
   checkFormReady();
 }
 
@@ -54,8 +52,8 @@ function showError(field, show) {
   if (el) el.classList.toggle("show", show);
 }
 
-// Botón de Verificación de ID
-document.getElementById("btn-verify").addEventListener("click", () => {
+// Búsqueda real en la API de Free Fire
+document.getElementById("btn-verify").addEventListener("click", async () => {
   const input = document.getElementById("playerId");
   const idValue = input.value.trim();
   
@@ -66,28 +64,66 @@ document.getElementById("btn-verify").addEventListener("click", () => {
   
   showError("playerId", false);
   const btn = document.getElementById("btn-verify");
-  btn.textContent = "Buscando...";
+  const infoBox = document.getElementById("player-info");
+  
+  btn.innerHTML = "⏳ Buscando...";
   btn.disabled = true;
+  infoBox.classList.add("hidden");
 
-  // SIMULACIÓN DE API: Como Garena no tiene API abierta, simulamos la búsqueda.
-  // En un entorno real, aquí harías un fetch() a tu API de recargas.
-  setTimeout(() => {
-    verifiedNick = "Jugador_" + idValue.slice(-4); // Nombre temporal generado
+  try {
+    // Consulta a API de Garena (a través de AllOrigins para evitar bloqueos)
+    const apiUrl = `https://free-ff-api-src-5plp.onrender.com/api/v1/account?region=US&uid=${idValue}`;
+    const response = await fetch(`https://api.allorigins.win/get?url=${encodeURIComponent(apiUrl)}`);
+    const result = await response.json();
+    const data = JSON.parse(result.contents);
     
-    document.getElementById("player-nick").textContent = verifiedNick;
-    document.getElementById("player-info").classList.remove("hidden");
+    let nickname = null;
+    let region = "US";
     
-    btn.textContent = "Verificado ✓";
-    btn.style.background = "var(--wa)";
-    btn.style.color = "#000";
-    btn.style.borderColor = "var(--wa)";
-    input.readOnly = true; 
+    // Extraer datos
+    if (data && data.basicInfo && data.basicInfo.nickname) {
+        nickname = data.basicInfo.nickname;
+        if(data.basicInfo.region) region = data.basicInfo.region;
+    } else if (data && data.AccountName) {
+        nickname = data.AccountName;
+    }
+
+    if (nickname) {
+      verifiedNick = nickname;
+      document.getElementById("player-nick").textContent = nickname;
+      document.getElementById("player-region").textContent = region;
+      
+      // Mostrar recuadro verde
+      infoBox.classList.remove("hidden");
+      btn.innerHTML = "✓ Verificado";
+      btn.style.background = "var(--wa)";
+      btn.style.color = "#000";
+      
+      checkFormReady();
+      return;
+    }
+    throw new Error("ID no encontrado");
+
+  } catch(e) {
+    // Plan B: Si la API gratuita está saturada o caída, le pide el nombre al usuario
+    btn.innerHTML = "🔍 Verificar";
+    btn.disabled = false;
     
-    checkFormReady();
-  }, 1200);
+    const manualNick = prompt("⚠️ Los servidores de búsqueda están saturados.\n\nPor favor, escribe tu nombre/nickname de Free Fire manualmente para continuar:");
+    
+    if (manualNick && manualNick.trim() !== "") {
+      verifiedNick = manualNick.trim();
+      document.getElementById("player-nick").textContent = verifiedNick;
+      document.getElementById("player-region").textContent = "US";
+      infoBox.classList.remove("hidden");
+      btn.innerHTML = "✓ Ingresado";
+      btn.disabled = true;
+      checkFormReady();
+    }
+  }
 });
 
-// Desbloquear botón de enviar solo si todo está listo
+// Desbloquear botón de enviar
 function checkFormReady() {
   const isReady = selected !== null && verifiedNick !== null;
   document.getElementById("btn-submit").disabled = !isReady;
@@ -101,11 +137,11 @@ document.getElementById("order").addEventListener("submit", (e) => {
   const payment = form.payment.value;
   const receipt = form.receipt.files.length > 0;
 
-  if (!verifiedNick) { alert("Debes verificar el ID primero."); return; }
+  if (!verifiedNick) { alert("Verifica el ID primero."); return; }
   if (!payment) { showError("payment", true); return; }
-  if (!receipt) { alert("Por favor, selecciona la imagen del comprobante de pago."); return; }
+  if (!receipt) { alert("Sube el comprobante de pago."); return; }
 
-  // MENÚ FORMATEADO EXACTAMENTE COMO LO PEDISTE
+  // Mensaje exacto solicitado
   const message = `🐺 NUEVO PEDIDO – WOLFKING
 
 🎮 Juego: Free Fire
@@ -116,9 +152,5 @@ document.getElementById("order").addEventListener("submit", (e) => {
 💳 Pago: ${payment}`;
 
   const encodedMessage = encodeURIComponent(message);
-  const waUrl = `https://wa.me/${WHATSAPP}?text=${encodedMessage}`;
-  
-  // Abrimos WhatsApp
-  window.open(waUrl, "_blank");
+  window.open(`https://wa.me/${WHATSAPP}?text=${encodedMessage}`, "_blank");
 });
-
