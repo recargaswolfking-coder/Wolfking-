@@ -1,29 +1,6 @@
-// WOLFKING — catálogo, verificación de jugador y pedidos por WhatsApp.
-// Para cambiar el número, usa el código de país y el número, sin "+" ni espacios.
+// WOLFKING — catálogo y pedidos por WhatsApp
+// Número en formato internacional: código de país + número, sin "+" ni espacios.
 const WHATSAPP = "573184986724";
-
-// Configura aquí tus datos reales de cobro.
-// Déjalos vacíos si todavía no quieres mostrarlos.
-const PAYMENT_DETAILS = {
-  "Nequi": {
-    title: "Nequi",
-    rows: [
-      ["Número", "TU_NUMERO_NEQUI"]
-    ]
-  },
-  "Llave Bre-B": {
-    title: "Llave Bre-B",
-    rows: [
-      ["Llave", "TU_LLAVE_BRE_B"]
-    ]
-  },
-  "Binance (USDT)": {
-    title: "Binance Pay",
-    rows: [
-      ["UID / Pay ID", "TU_UID_BINANCE"]
-    ]
-  }
-};
 
 const DIAMONDS = [
   { id: "d110", name: "110 diamantes", amount: 110, price: 3000 },
@@ -42,287 +19,120 @@ const PASSES = [
 
 const all = [...DIAMONDS, ...PASSES];
 let selected = null;
-let verifiedPlayer = null;
-let lookupTimer = null;
-let receiptFile = null;
-let receiptObjectUrl = null;
 
-const cop = (value) => "$" + Number(value).toLocaleString("es-CO");
+const cop = (amount) => "$" + amount.toLocaleString("es-CO");
+
+function makeCard(item) {
+  const button = document.createElement("button");
+  button.type = "button";
+  button.className = "product-card";
+  button.dataset.id = item.id;
+  button.setAttribute("aria-pressed", "false");
+  button.setAttribute("aria-label", `Seleccionar ${item.name}, ${cop(item.price)} COP`);
+
+  const tag = item.tag ? `<span class="product-tag">${item.tag}</span>` : "";
+  const icon = item.icon || "💎";
+  const title = item.amount ? item.amount.toLocaleString("es-CO") : item.name;
+  const subtitle = item.amount ? "DIAMANTES" : "FREE FIRE";
+  button.innerHTML = `
+    ${tag}
+    <span class="product-icon" aria-hidden="true">${icon}</span>
+    <span class="product-name">${title}</span>
+    <span class="product-subtitle">${subtitle}</span>
+    <span class="product-price">${cop(item.price)} <small>COP</small></span>
+    <span class="product-select">SELECCIONAR <b aria-hidden="true">↗</b></span>
+  `;
+  button.addEventListener("click", () => selectPackage(item.id));
+  return button;
+}
 
 function showError(field, visible) {
   const error = document.querySelector(`.error[data-for="${field}"]`);
   if (error) error.classList.toggle("show", visible);
 }
 
-function setPlayerStatus(state, title, text) {
-  const box = document.getElementById("player-status");
-  const titleEl = document.getElementById("player-status-title");
-  const textEl = document.getElementById("player-status-text");
-  box.dataset.state = state;
-  titleEl.textContent = title;
-  textEl.textContent = text;
-}
-
-function makeCard(item) {
-  const button = document.createElement("button");
-  button.type = "button";
-  button.className = "pkg";
-  button.dataset.id = item.id;
-  button.setAttribute("aria-pressed", "false");
-  button.setAttribute("aria-label", `Seleccionar ${item.name}, ${cop(item.price)} pesos colombianos`);
-
-  const top = document.createElement("span");
-  top.className = "pkg-topline";
-  const icon = document.createElement("span");
-  icon.className = "pkg-icon";
-  icon.textContent = item.icon || "◆";
-  top.appendChild(icon);
-
-  if (item.tag) {
-    const tag = document.createElement("span");
-    tag.className = "pkg-tag";
-    tag.textContent = item.tag;
-    top.appendChild(tag);
-  }
-
-  const check = document.createElement("span");
-  check.className = "pkg-check";
-  check.setAttribute("aria-hidden", "true");
-  check.textContent = "✓";
-
-  const name = document.createElement("span");
-  name.className = "pkg-name";
-  name.textContent = item.amount ? item.amount.toLocaleString("es-CO") : item.name;
-  button.append(top, check, name);
-
-  if (item.amount) {
-    const sub = document.createElement("span");
-    sub.className = "pkg-sub";
-    sub.textContent = "diamantes";
-    button.appendChild(sub);
-  }
-
-  const price = document.createElement("span");
-  price.className = "pkg-price";
-  price.textContent = cop(item.price);
-  button.appendChild(price);
-  button.addEventListener("click", () => selectPackage(item.id));
-  return button;
-}
-
 function selectPackage(id) {
   selected = all.find((item) => item.id === id) || null;
+  if (!selected) return;
 
-  document.querySelectorAll(".pkg").forEach((element) => {
-    const active = element.dataset.id === id;
-    element.classList.toggle("active", active);
-    element.setAttribute("aria-pressed", String(active));
-  });
-
-  document.getElementById("sum-item").textContent = selected ? selected.name : "Ningún paquete";
-  document.getElementById("sum-price").innerHTML = selected
-    ? `${cop(selected.price)} <small>COP</small>`
-    : '$0 <small>COP</small>';
-  showError("item", false);
-  updateSubmitState();
-
-  if (window.matchMedia("(max-width: 700px)").matches) {
-    document.querySelector(".order-panel")?.scrollIntoView({ behavior: "smooth", block: "start" });
-  }
-}
-
-function selectPayment(payment) {
-  document.getElementById("payment").value = payment;
-  document.querySelectorAll(".payment-option").forEach((button) => {
-    const active = button.dataset.payment === payment;
+  document.querySelectorAll(".product-card").forEach((button) => {
+    const active = button.dataset.id === id;
     button.classList.toggle("active", active);
-    button.setAttribute("aria-checked", String(active));
-    const indicator = button.querySelector("i");
-    if (indicator) indicator.textContent = active ? "●" : "○";
+    button.setAttribute("aria-pressed", String(active));
   });
 
-  const details = PAYMENT_DETAILS[payment];
-  const box = document.getElementById("payment-details");
-  if (!details) {
-    box.hidden = true;
-    box.innerHTML = "";
-  } else {
-    box.hidden = false;
-    box.innerHTML = `<strong>💳 ${escapeHtml(details.title)}</strong>` + details.rows.map(([label, value]) =>
-      `<div><span>${escapeHtml(label)}</span><b>${escapeHtml(value)}</b></div>`
-    ).join("");
-  }
+  document.getElementById("sum-item").textContent = selected.name;
+  document.getElementById("sum-caption").textContent = selected.amount
+    ? `${selected.amount.toLocaleString("es-CO")} diamantes`
+    : "Producto seleccionado";
+  document.getElementById("sum-price").innerHTML = `${cop(selected.price)} <small>COP</small>`;
+  showError("item", false);
 
-  document.getElementById("sum-payment").textContent = payment || "—";
-  showError("payment", false);
-  updateSubmitState();
-}
-
-function updateSubmitState() {
-  const button = document.getElementById("submit-order");
-  const id = document.getElementById("playerId").value.trim();
-  const payment = document.getElementById("payment").value;
-  const ready = Boolean(verifiedPlayer && verifiedPlayer.id === id && selected && payment);
-  button.disabled = !ready;
-}
-
-async function lookupPlayer() {
-  const input = document.getElementById("playerId");
-  const uid = input.value.trim();
-  const spinner = document.getElementById("lookup-spinner");
-  const nick = document.getElementById("nick");
-  const submit = document.getElementById("submit-order");
-
-  verifiedPlayer = null;
-  nick.value = "";
-  document.getElementById("sum-id").textContent = uid || "—";
-  document.getElementById("sum-nick").textContent = "—";
-  submit.disabled = true;
-
-  if (!/^\d{6,13}$/.test(uid)) {
-    spinner.classList.remove("show");
-    setPlayerStatus("idle", "Verificación automática", "Escribe un ID de 6 a 13 números.");
-    return;
-  }
-
-  spinner.classList.add("show");
-  setPlayerStatus("loading", "Buscando jugador…", "Estamos verificando el ID en Free Fire.");
-
-  try {
-    const response = await fetch(`/.netlify/functions/player-info?uid=${encodeURIComponent(uid)}`, {
-      headers: { Accept: "application/json" }
-    });
-    const data = await response.json().catch(() => ({}));
-
-    if (!response.ok || !data.ok || !data.player?.nickname) {
-      throw new Error(data.message || data.error || "player_not_found");
-    }
-
-    verifiedPlayer = data.player;
-    nick.value = data.player.nickname;
-    document.getElementById("sum-id").textContent = data.player.id;
-    document.getElementById("sum-nick").textContent = data.player.nickname;
-    setPlayerStatus(
-      "success",
-      "JUGADOR ENCONTRADO",
-      `${data.player.nickname}${data.player.region ? ` · Región ${data.player.region}` : ""}`
-    );
-    showError("playerId", false);
-    updateSubmitState();
-  } catch (error) {
-    setPlayerStatus("error", "No encontramos el jugador", "Revisa el ID e inténtalo nuevamente.");
-    showError("playerId", true);
-  } finally {
-    spinner.classList.remove("show");
+  // En móviles, desplaza al formulario para que el cliente pueda completar el pedido.
+  if (window.matchMedia("(max-width: 899px)").matches) {
+    document.querySelector(".order-panel").scrollIntoView({ behavior: "smooth", block: "start" });
   }
 }
 
-function queuePlayerLookup() {
-  clearTimeout(lookupTimer);
-  lookupTimer = setTimeout(lookupPlayer, 650);
-}
-
-function handleReceipt(event) {
-  const file = event.target.files?.[0];
-  if (!file) return;
-  if (!file.type.startsWith("image/")) {
-    event.target.value = "";
-    return;
-  }
-  receiptFile = file;
-  if (receiptObjectUrl) URL.revokeObjectURL(receiptObjectUrl);
-  receiptObjectUrl = URL.createObjectURL(file);
-  document.getElementById("receipt-image").src = receiptObjectUrl;
-  document.getElementById("receipt-preview").hidden = false;
-}
-
-function removeReceipt() {
-  receiptFile = null;
-  document.getElementById("receipt").value = "";
-  document.getElementById("receipt-preview").hidden = true;
-  if (receiptObjectUrl) {
-    URL.revokeObjectURL(receiptObjectUrl);
-    receiptObjectUrl = null;
-  }
-}
-
-function openWhatsApp(message) {
-  const url = `https://wa.me/${WHATSAPP}?text=${encodeURIComponent(message)}`;
-  const opened = window.open(url, "_blank", "noopener,noreferrer");
-  if (!opened) window.location.href = url;
-}
-
-function escapeHtml(value) {
-  return String(value).replace(/[&<>'"]/g, (char) => ({
-    "&": "&amp;", "<": "&lt;", ">": "&gt;", "'": "&#39;", '"': "&quot;"
-  }[char]));
+function buildWhatsAppUrl(message) {
+  return `https://wa.me/${WHATSAPP}?text=${encodeURIComponent(message)}`;
 }
 
 function init() {
-  const diamondsContainer = document.getElementById("diamonds");
-  const passesContainer = document.getElementById("passes");
-  DIAMONDS.forEach((item) => diamondsContainer.appendChild(makeCard(item)));
-  PASSES.forEach((item) => passesContainer.appendChild(makeCard(item)));
+  const diamondsRoot = document.getElementById("diamonds");
+  const passesRoot = document.getElementById("passes");
+  DIAMONDS.forEach((item) => diamondsRoot.appendChild(makeCard(item)));
+  PASSES.forEach((item) => passesRoot.appendChild(makeCard(item)));
 
-  const generalMessage = "Hola WOLFKING 🐺, quiero información sobre recargas de Free Fire.";
-  document.getElementById("wa-float").href = `https://wa.me/${WHATSAPP}?text=${encodeURIComponent(generalMessage)}`;
+  const greeting = "Hola WOLFKING 🐺, quiero información sobre recargas de Free Fire.";
+  document.getElementById("wa-float").href = buildWhatsAppUrl(greeting);
   document.getElementById("year").textContent = new Date().getFullYear();
 
-  const playerIdInput = document.getElementById("playerId");
+  const form = document.getElementById("order");
+  const playerIdInput = form.elements.playerId;
   playerIdInput.addEventListener("input", () => {
     playerIdInput.value = playerIdInput.value.replace(/\D/g, "").slice(0, 13);
-    document.getElementById("sum-id").textContent = playerIdInput.value || "—";
-    queuePlayerLookup();
+    if (/^[0-9]{6,13}$/.test(playerIdInput.value)) showError("playerId", false);
   });
-  playerIdInput.addEventListener("blur", lookupPlayer);
-
-  document.querySelectorAll(".payment-option").forEach((button) => {
-    button.setAttribute("aria-checked", "false");
-    button.addEventListener("click", () => selectPayment(button.dataset.payment));
+  form.elements.payment.addEventListener("change", () => {
+    if (form.elements.payment.value) showError("payment", false);
   });
 
-  document.getElementById("receipt").addEventListener("change", handleReceipt);
-  document.getElementById("remove-receipt").addEventListener("click", removeReceipt);
-
-  document.getElementById("order").addEventListener("submit", (event) => {
+  form.addEventListener("submit", (event) => {
     event.preventDefault();
-    const playerId = document.getElementById("playerId").value.trim();
-    const payment = document.getElementById("payment").value;
+    const playerId = playerIdInput.value.trim();
+    const nick = form.elements.nick.value.trim();
+    const payment = form.elements.payment.value;
+    const idValid = /^[0-9]{6,13}$/.test(playerId);
 
-    const idValid = /^\d{6,13}$/.test(playerId);
-    const playerValid = Boolean(verifiedPlayer && verifiedPlayer.id === playerId);
-    const paymentValid = Boolean(payment);
-
-    showError("playerId", !idValid || !playerValid);
-    showError("payment", !paymentValid);
+    showError("playerId", !idValid);
+    showError("payment", !payment);
     showError("item", !selected);
 
-    if (!idValid || !playerValid || !paymentValid || !selected) {
-      if (!playerValid) document.getElementById("playerId").focus();
+    if (!idValid || !payment || !selected) {
+      const firstError = document.querySelector(".error.show");
+      if (firstError) firstError.scrollIntoView({ behavior: "smooth", block: "center" });
       return;
     }
 
     const lines = [
-      "🐺 *NUEVO PEDIDO – WOLFKING*",
+      "🐺 *NUEVO PEDIDO — WOLFKING*",
       "",
       "🎮 *Juego:* Free Fire",
-      `🆔 *ID:* ${playerId}`,
-      `👤 *Jugador:* ${verifiedPlayer.nickname}`,
-      verifiedPlayer.region ? `🌎 *Región:* ${verifiedPlayer.region}` : null,
+      `🆔 *ID de jugador:* ${playerId}`,
+      nick ? `👤 *Nickname:* ${nick}` : null,
       `📦 *Paquete:* ${selected.name}`,
-      `💰 *Total:* ${cop(selected.price)} COP`,
-      `💳 *Pago:* ${payment}`,
-      receiptFile ? `📸 *Comprobante:* seleccionado (${receiptFile.name})` : "📸 *Comprobante:* no adjunto",
+      `💰 *Total estimado:* ${cop(selected.price)} COP`,
+      `💳 *Método de pago elegido:* ${payment}`,
       "",
-      receiptFile
-        ? "Abriré el chat. Por favor adjunta en WhatsApp la imagen del comprobante que seleccionaste."
-        : "Hola, quiero confirmar mi pedido. Gracias."
-    ].filter(Boolean);
+      "Hola, quiero confirmar disponibilidad, precio y datos de pago antes de realizar la transferencia. ¡Gracias!"
+    ].filter((line) => line !== null);
 
-    openWhatsApp(lines.join("\n"));
+    // Abrimos WhatsApp con el pedido preparado; el cliente debe revisar y enviarlo.
+    const url = buildWhatsAppUrl(lines.join("\n"));
+    const newWindow = window.open(url, "_blank", "noopener,noreferrer");
+    if (!newWindow) window.location.href = url;
   });
-
-  updateSubmitState();
 }
 
 document.addEventListener("DOMContentLoaded", init);

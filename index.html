@@ -77,48 +77,25 @@
           <p class="order-intro">Revisa tus datos y continúa a WhatsApp para confirmar la compra.</p>
           <form id="order" novalidate>
             <label for="playerId">ID de jugador <span class="required-mark">*</span></label>
-            <div class="id-lookup-wrap">
-              <input id="playerId" name="playerId" inputmode="numeric" autocomplete="off" maxlength="13" placeholder="Ej. 8264923164" required aria-describedby="playerId-error player-status">
-              <span class="lookup-spinner" id="lookup-spinner" aria-hidden="true"></span>
-            </div>
+            <input id="playerId" name="playerId" inputmode="numeric" autocomplete="off" maxlength="13" placeholder="Ej. 123456789" required aria-describedby="playerId-error">
             <small class="error" id="playerId-error" data-for="playerId">Escribe un ID de 6 a 13 números.</small>
 
-            <div class="player-status" id="player-status" data-state="idle" aria-live="polite">
-              <span class="player-status-icon">⌁</span>
-              <div><strong id="player-status-title">Verificación automática</strong><small id="player-status-text">Escribe tu ID y consultaremos tu cuenta.</small></div>
-            </div>
-
-            <label for="nick">Nickname verificado</label>
-            <input id="nick" name="nick" maxlength="40" autocomplete="off" placeholder="Se mostrará automáticamente" readonly>
+            <label for="nick">Nickname <span class="optional">(opcional)</span></label>
+            <input id="nick" name="nick" maxlength="40" autocomplete="off" placeholder="Tu nombre en el juego">
 
             <label for="payment">Método de pago <span class="required-mark">*</span></label>
-            <div class="payment-options" id="payment-options" role="radiogroup" aria-label="Método de pago">
-              <button type="button" class="payment-option" data-payment="Nequi"><span class="payment-option-icon">N</span><span><strong>Nequi</strong><small>Transferencia</small></span><i>○</i></button>
-              <button type="button" class="payment-option" data-payment="Llave Bre-B"><span class="payment-option-icon">↔</span><span><strong>Llave Bre-B</strong><small>Transferencia</small></span><i>○</i></button>
-              <button type="button" class="payment-option" data-payment="Binance (USDT)"><span class="payment-option-icon">◆</span><span><strong>Binance Pay</strong><small>USDT</small></span><i>○</i></button>
-            </div>
-            <input type="hidden" id="payment" name="payment" value="">
+            <div class="select-wrap"><select id="payment" name="payment" required aria-describedby="payment-error">
+              <option value="">Selecciona tu método</option><option value="Nequi">Nequi</option><option value="Llave Bre-B">Llave Bre-B</option><option value="Binance (USDT)">Binance (USDT)</option>
+            </select><span aria-hidden="true">⌄</span></div>
             <small class="error" id="payment-error" data-for="payment">Selecciona un método de pago.</small>
 
-            <div class="payment-details" id="payment-details" hidden></div>
-
-            <label for="receipt">Comprobante de pago <span class="optional">(opcional)</span></label>
-            <div class="receipt-box">
-              <input id="receipt" name="receipt" type="file" accept="image/*">
-              <small>Sube una captura o foto. Al abrir WhatsApp, adjunta esta misma imagen en el chat.</small>
-              <div class="receipt-preview" id="receipt-preview" hidden><img id="receipt-image" alt="Vista previa del comprobante"><button type="button" id="remove-receipt">Quitar</button></div>
-            </div>
-
             <div class="order-summary">
-              <div class="summary-top"><span>RESUMEN DEL PEDIDO</span><span class="summary-status"><i></i> LISTO</span></div>
-              <div class="summary-row"><span>🆔 ID</span><strong class="summary-value" id="sum-id">—</strong></div>
-              <div class="summary-row"><span>👤 Jugador</span><strong class="summary-value" id="sum-nick">—</strong></div>
-              <div class="summary-row"><span>📦 Paquete</span><strong class="summary-value" id="sum-item">Ningún paquete</strong></div>
-              <div class="summary-row"><span>💳 Pago</span><strong class="summary-value" id="sum-payment">—</strong></div>
-              <div class="summary-total"><span>💰 Total</span><strong id="sum-price">$0 <small>COP</small></strong></div>
+              <div class="summary-top"><span>RESUMEN</span><span class="summary-status"><i></i> TU SELECCIÓN</span></div>
+              <div class="summary-product"><div class="summary-gem">💎</div><div class="summary-info"><strong id="sum-item">Ningún paquete</strong><small id="sum-caption">Selecciona un paquete del catálogo</small></div></div>
+              <div class="summary-total"><span>Total estimado</span><strong id="sum-price">$0 <small>COP</small></strong></div>
             </div>
             <small class="error item-error" data-for="item">Primero elige un paquete del catálogo.</small>
-            <button class="btn btn-whatsapp" id="submit-order" type="submit" disabled><span class="wa-icon">↗</span> Enviar pedido por WhatsApp</button>
+            <button class="btn btn-whatsapp" type="submit"><span class="wa-icon">↗</span> Continuar por WhatsApp</button>
             <p class="form-footnote"><span>🔒</span> Nunca te pediremos la contraseña de tu cuenta.</p>
           </form>
         </aside>
@@ -135,11 +112,11 @@
     </section>
 
     <section class="how-section section-shell" id="como">
-      <div class="how-intro"><div class="eyebrow"><span class="eyebrow-line"></span> EN TRES PASOS</div><h2>ASÍ DE<br><span>SENCILLO.</span></h2><p>Verificamos automáticamente tu ID, muestras el nombre real de la cuenta y luego preparas el pedido. Antes de pagar, confirma los detalles por WhatsApp.</p><a href="#recargar" class="text-link">Elegir mi paquete <span>↗</span></a></div>
+      <div class="how-intro"><div class="eyebrow"><span class="eyebrow-line"></span> EN TRES PASOS</div><h2>ASÍ DE<br><span>SENCILLO.</span></h2><p>Todo comienza con tu selección. Antes de pagar, confirma los detalles por el chat.</p><a href="#recargar" class="text-link">Elegir mi paquete <span>↗</span></a></div>
       <div class="steps-list">
         <article class="step-card"><span class="step-number">01</span><div><h3>Elige tu paquete</h3><p>Selecciona los diamantes, la tarjeta o el pase que quieres comprar.</p></div><span class="step-symbol">✦</span></article>
-        <article class="step-card"><span class="step-number">02</span><div><h3>Verifica tu jugador</h3><p>Escribe tu ID y comprobamos automáticamente el nickname de tu cuenta.</p></div><span class="step-symbol">✓</span></article>
-        <article class="step-card"><span class="step-number">03</span><div><h3>Envía y confirma</h3><p>Selecciona el pago, revisa el resumen y abre WhatsApp para confirmar.</p></div><span class="step-symbol">↗</span></article>
+        <article class="step-card"><span class="step-number">02</span><div><h3>Envía tu pedido</h3><p>Completa tu ID, elige el método de pago y continúa a WhatsApp.</p></div><span class="step-symbol">↗</span></article>
+        <article class="step-card"><span class="step-number">03</span><div><h3>Confirma y recibe</h3><p>Verifica precio y disponibilidad con WOLFKING antes de realizar el pago.</p></div><span class="step-symbol">✓</span></article>
       </div>
     </section>
 
