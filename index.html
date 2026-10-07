@@ -3,31 +3,16 @@
 <head>  
   <meta charset="utf-8" />  
   <meta name="viewport" content="width=device-width, initial-scale=1" />  
-  <title>WOLFKING · Recargas Free Fire por ID</title>  
-  <meta name="description" content="Recarga diamantes de Free Fire por ID de forma rápida y segura." />  
+  <title>WOLFKING · Recargas Free Fire</title>  
   <meta name="theme-color" content="#0b0b0f" />  
   <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🐺</text></svg>" />  
-  <link rel="preconnect" href="https://fonts.googleapis.com" />  
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />  
   <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Rajdhani:wght@500;600;700&display=swap" rel="stylesheet" />  
   <link rel="stylesheet" href="styles.css" />  
 </head>  
 <body>  
   <header class="topbar">  
     <a href="#" class="brand"><span class="brand-mark">🐺</span> WOLF<span>KING</span></a>  
-    <nav>  
-      <a href="#recargar">Recargar</a>  
-      <a href="#pagos">Pagos</a>  
-    </nav>  
   </header>    
-  
-  <section class="hero">  
-    <div class="hero-glow"></div>  
-    <p class="eyebrow">Recargas Free Fire · Colombia</p>  
-    <h1>WOLF<span>KING</span></h1>  
-    <p class="tagline">Diamantes por ID, rápidos y seguros. Elige tu paquete, verifica tu ID y envíanos el pedido por WhatsApp.</p>  
-    <a href="#recargar" class="btn btn-primary">Recargar ahora</a>  
-  </section>    
 
   <main id="recargar" class="container">  
     <section>  
@@ -39,19 +24,27 @@
     </section>  
     
     <section class="order-wrap">  
-      <h2><span class="num">2</span> Completa tu pedido</h2>  
+      <h2><span class="num">2</span> Datos del pedido</h2>  
       <form id="order" class="card form" novalidate>  
         
-        <label>ID de jugador Free Fire  
+        <label>ID del jugador  
           <div class="input-group">
-            <input id="playerId" name="playerId" inputmode="numeric" placeholder="Ej. 123456789" required pattern="[0-9]{6,13}" />  
-            <button type="button" id="btn-verify" class="btn-verify">Verificar</button>
+            <input id="playerId" name="playerId" inputmode="numeric" placeholder="Ingresa el ID del jugador" required pattern="[0-9]{6,13}" />  
+            <button type="button" id="btn-verify" class="btn-verify">🔍 Verificar</button>
           </div>
-          <small class="error" data-for="playerId">Ingresa un ID válido (6 a 13 dígitos).</small>  
+          <small class="error" data-for="playerId">Ingresa un ID válido.</small>  
         </label>  
 
+        <!-- Recuadro verde estilo video -->
         <div id="player-info" class="player-info hidden">
-          <span>👤 Nickname: </span><strong id="player-nick">---</strong>
+          <div class="player-status">
+            <span class="icon-check">✅</span>
+            <span>JUGADOR ENCONTRADO</span>
+          </div>
+          <div class="player-details">
+            <div>👤 <strong id="player-nick">---</strong></div>
+            <div>🌍 Región: <span id="player-region">US</span></div>
+          </div>
         </div>
 
         <label>Método de pago  
@@ -66,7 +59,7 @@
 
         <label>Comprobante de pago 📸  
           <input type="file" id="receipt" accept="image/*" class="file-input" required />  
-          <small class="muted" style="color: var(--gold);">⚠️ Importante: Por políticas de WhatsApp, deberás adjuntar esta imagen manualmente en el chat al enviar tu pedido.</small>  
+          <small class="muted" style="color: var(--gold);">⚠️ Importante: Tendrás que enviar esta imagen manualmente en el chat de WhatsApp.</small>  
         </label>  
 
         <div class="summary">  
@@ -88,10 +81,6 @@
     </section>
   </main>    
 
-  <footer>  
-    <p><strong>WOLFKING</strong> · Recargas Free Fire por ID</p>  
-  </footer>  
-  
   <script src="app.js"></script>  
 </body>  
 </html>
