@@ -1,0 +1,134 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#090a0f">
+  <meta name="description" content="Recargas de diamantes, tarjetas y pase de Free Fire en Colombia. Elige tu paquete y envía tu pedido a WOLFKING por WhatsApp.">
+  <meta property="og:title" content="WOLFKING | Recargas Free Fire">
+  <meta property="og:description" content="Elige tu paquete, completa tu ID y pide por WhatsApp.">
+  <title>WOLFKING | Recargas Free Fire</title>
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ctext y='.9em' font-size='90'%3E🐺%3C/text%3E%3C/svg%3E">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@500;600;700;800;900&family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="./styles.css">
+  <script src="./app.js" defer></script>
+</head>
+<body>
+  <div class="announcement"><span class="announcement-dot"></span> WOLFKING STORE <span class="announcement-separator">/</span> RECARGAS PARA COLOMBIA</div>
+  <header class="topbar">
+    <a class="brand" href="#inicio" aria-label="WOLFKING, inicio">
+      <span class="brand-emblem" aria-hidden="true">W</span>
+      <span class="brand-word">WOLF<span>KING</span><small>RECARGAS GAMER</small></span>
+    </a>
+    <nav class="desktop-nav" aria-label="Navegación principal">
+      <a href="#recargar">Catálogo</a><a href="#pagos">Pagos</a><a href="#como">Cómo funciona</a>
+    </nav>
+    <a class="nav-cta" href="#recargar">Elegir paquete <span aria-hidden="true">↗</span></a>
+  </header>
+
+  <main>
+    <section class="hero" id="inicio">
+      <div class="hero-grid" aria-hidden="true"></div>
+      <div class="hero-orb hero-orb-one" aria-hidden="true"></div>
+      <div class="hero-orb hero-orb-two" aria-hidden="true"></div>
+      <div class="hero-content">
+        <div class="eyebrow"><span class="eyebrow-line"></span> TU RECARGA, A TU RITMO</div>
+        <h1>SUBE DE<br><span>NIVEL.</span></h1>
+        <p class="hero-copy">Tus diamantes y pases de Free Fire, en unos pocos pasos. Elige tu paquete y envía tu pedido directamente por WhatsApp.</p>
+        <div class="hero-actions">
+          <a class="btn btn-primary" href="#recargar">Ver paquetes <span aria-hidden="true">↓</span></a>
+          <a class="btn btn-ghost" href="#como">¿Cómo funciona?</a>
+        </div>
+        <div class="hero-trust">
+          <div class="trust-item"><span class="trust-icon">ID</span><span><b>Solo tu ID</b><small>No compartas tu contraseña</small></span></div>
+          <div class="trust-item"><span class="trust-icon">WA</span><span><b>Pedido por WhatsApp</b><small>Confirmas antes de pagar</small></span></div>
+        </div>
+      </div>
+      <div class="hero-art" aria-label="Ilustración decorativa gamer">
+        <div class="art-ring ring-outer"></div><div class="art-ring ring-inner"></div>
+        <div class="art-cross cross-one">✦</div><div class="art-cross cross-two">✧</div>
+        <div class="wolf-symbol">W<span>K</span></div>
+        <div class="art-label art-label-top"><span class="live-dot"></span> WOLFKING / ONLINE</div>
+        <div class="art-label art-label-bottom">PLAY SMART. LEVEL UP.</div>
+        <div class="art-chip">💎 DIAMANTES</div>
+      </div>
+      <div class="hero-bottomline"><span>01 — CATÁLOGO</span><span>FREE FIRE · COLOMBIA</span><span>WOLFKING®</span></div>
+    </section>
+
+    <section class="catalog section-shell" id="recargar">
+      <div class="section-heading">
+        <div><div class="eyebrow"><span class="eyebrow-line"></span> ELIGE TU RECARGA</div><h2>ARMA TU <span>PEDIDO.</span></h2></div>
+        <p>Selecciona un paquete para ver el resumen. Los precios están expresados en pesos colombianos (COP).</p>
+      </div>
+      <div class="catalog-layout">
+        <div class="product-area">
+          <div class="group-heading"><span class="group-icon">✦</span><div><h3>Diamantes</h3><p>Elige la cantidad que necesitas</p></div><span class="group-count">06 PAQUETES</span></div>
+          <div class="product-grid" id="diamonds" aria-label="Paquetes de diamantes"></div>
+          <div class="group-heading pass-heading"><span class="group-icon">♛</span><div><h3>Membresías y pases</h3><p>Más opciones para tu partida</p></div></div>
+          <div class="product-grid pass-grid" id="passes" aria-label="Membresías y pases"></div>
+          <p class="catalog-note"><span>ⓘ</span> Los pedidos quedan sujetos a confirmación de disponibilidad y precio por WhatsApp antes del pago.</p>
+        </div>
+
+        <aside class="order-panel" aria-labelledby="order-title">
+          <div class="order-panel-top"><span class="step-pill">PASO 02</span><span class="secure-label"><span>●</span> PEDIDO DIRECTO</span></div>
+          <h3 id="order-title">Completa tu pedido</h3>
+          <p class="order-intro">Revisa tus datos y continúa a WhatsApp para confirmar la compra.</p>
+          <form id="order" novalidate>
+            <label for="playerId">ID de jugador <span class="required-mark">*</span></label>
+            <input id="playerId" name="playerId" inputmode="numeric" autocomplete="off" maxlength="13" placeholder="Ej. 123456789" required aria-describedby="playerId-error">
+            <small class="error" id="playerId-error" data-for="playerId">Escribe un ID de 6 a 13 números.</small>
+
+            <label for="nick">Nickname <span class="optional">(opcional)</span></label>
+            <input id="nick" name="nick" maxlength="40" autocomplete="off" placeholder="Tu nombre en el juego">
+
+            <label for="payment">Método de pago <span class="required-mark">*</span></label>
+            <div class="select-wrap"><select id="payment" name="payment" required aria-describedby="payment-error">
+              <option value="">Selecciona tu método</option><option value="Nequi">Nequi</option><option value="Llave Bre-B">Llave Bre-B</option><option value="Binance (USDT)">Binance (USDT)</option>
+            </select><span aria-hidden="true">⌄</span></div>
+            <small class="error" id="payment-error" data-for="payment">Selecciona un método de pago.</small>
+
+            <div class="order-summary">
+              <div class="summary-top"><span>RESUMEN</span><span class="summary-status"><i></i> TU SELECCIÓN</span></div>
+              <div class="summary-product"><div class="summary-gem">💎</div><div class="summary-info"><strong id="sum-item">Ningún paquete</strong><small id="sum-caption">Selecciona un paquete del catálogo</small></div></div>
+              <div class="summary-total"><span>Total estimado</span><strong id="sum-price">$0 <small>COP</small></strong></div>
+            </div>
+            <small class="error item-error" data-for="item">Primero elige un paquete del catálogo.</small>
+            <button class="btn btn-whatsapp" type="submit"><span class="wa-icon">↗</span> Continuar por WhatsApp</button>
+            <p class="form-footnote"><span>🔒</span> Nunca te pediremos la contraseña de tu cuenta.</p>
+          </form>
+        </aside>
+      </div>
+    </section>
+
+    <section class="payment-section section-shell" id="pagos">
+      <div class="section-heading compact-heading"><div><div class="eyebrow"><span class="eyebrow-line"></span> PAGOS</div><h2>FÁCIL Y <span>CLARO.</span></h2></div><p>Elige tu opción al preparar el pedido. Los datos de pago se confirman por WhatsApp.</p></div>
+      <div class="payment-grid">
+        <article class="payment-card"><div class="payment-icon nequi-icon">N</div><div><h3>Nequi</h3><p>Recibe los datos de pago al confirmar tu pedido.</p></div><span class="payment-arrow">↗</span></article>
+        <article class="payment-card"><div class="payment-icon breb-icon">↔</div><div><h3>Llave Bre-B</h3><p>Solicita la llave de pago por el chat.</p></div><span class="payment-arrow">↗</span></article>
+        <article class="payment-card"><div class="payment-icon binance-icon">◆</div><div><h3>Binance (USDT)</h3><p>Confirma por WhatsApp los detalles para pagar.</p></div><span class="payment-arrow">↗</span></article>
+      </div>
+    </section>
+
+    <section class="how-section section-shell" id="como">
+      <div class="how-intro"><div class="eyebrow"><span class="eyebrow-line"></span> EN TRES PASOS</div><h2>ASÍ DE<br><span>SENCILLO.</span></h2><p>Todo comienza con tu selección. Antes de pagar, confirma los detalles por el chat.</p><a href="#recargar" class="text-link">Elegir mi paquete <span>↗</span></a></div>
+      <div class="steps-list">
+        <article class="step-card"><span class="step-number">01</span><div><h3>Elige tu paquete</h3><p>Selecciona los diamantes, la tarjeta o el pase que quieres comprar.</p></div><span class="step-symbol">✦</span></article>
+        <article class="step-card"><span class="step-number">02</span><div><h3>Envía tu pedido</h3><p>Completa tu ID, elige el método de pago y continúa a WhatsApp.</p></div><span class="step-symbol">↗</span></article>
+        <article class="step-card"><span class="step-number">03</span><div><h3>Confirma y recibe</h3><p>Verifica precio y disponibilidad con WOLFKING antes de realizar el pago.</p></div><span class="step-symbol">✓</span></article>
+      </div>
+    </section>
+
+    <section class="trust-banner section-shell"><div class="trust-banner-icon">🐺</div><div><span class="eyebrow">JUEGA CON TRANQUILIDAD</span><h2>Tu cuenta es tuya.</h2><p>Para preparar el pedido solo necesitamos tu ID de jugador. No compartas contraseñas ni códigos de acceso.</p></div><a href="#recargar" class="btn btn-ghost">Empezar ahora ↗</a></section>
+  </main>
+
+  <footer class="footer">
+    <a class="brand footer-brand" href="#inicio"><span class="brand-emblem">W</span><span class="brand-word">WOLF<span>KING</span><small>RECARGAS GAMER</small></span></a>
+    <p>Recargas y pedidos de Free Fire por WhatsApp.</p>
+    <div class="footer-bottom"><span>© <span id="year"></span> WOLFKING. Todos los derechos reservados.</span><span class="disclaimer">Sitio independiente; no afiliado ni respaldado por Garena. Free Fire es marca de su titular.</span></div>
+  </footer>
+  <a class="wa-float" id="wa-float" href="#" target="_blank" rel="noopener noreferrer" aria-label="Consultar por WhatsApp"><span>↗</span><small>WHATSAPP</small></a>
+  <noscript><div class="noscript">Activa JavaScript en tu navegador para utilizar el catálogo y preparar tu pedido.</div></noscript>
+</body>
+</html>
